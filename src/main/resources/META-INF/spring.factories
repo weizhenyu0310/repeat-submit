@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.repeatsubmit.autoconfigure.RepeatSubmitAutoConfiguration,\
+  com.repeatsubmit.autoconfigure.DefinitionRegistryPostProcessor
