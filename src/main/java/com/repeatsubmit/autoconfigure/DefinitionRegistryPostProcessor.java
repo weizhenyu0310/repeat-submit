@@ -36,8 +36,9 @@ public class DefinitionRegistryPostProcessor implements BeanDefinitionRegistryPo
         public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry)
                 throws BeansException {
             // 注册bean
-            registerBean(registry, "repeatSubmitWebMvcConfigurer", RepeatSubmitWebMvcConfigurer.class);
-            registerBean(registry, "sameUrlDataInterceptor", SameUrlDataInterceptor.class);
+            registerBean(registry, "RepeatSubmitWebMvcConfigurer", RepeatSubmitWebMvcConfigurer.class);
+            registerBean(registry, "SameUrlDataInterceptor", SameUrlDataInterceptor.class);
+            registerBean(registry, "RepeatSubmitExceptionHandler", RepeatSubmitExceptionHandler.class);
         }
         /**
          注册bean

@@ -2,12 +2,6 @@ package com.repeatsubmit.autoconfigure;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
-import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -19,7 +13,6 @@ import org.springframework.context.annotation.*;
  * @author repeatsubmit
  */
 @Configuration
-//@ComponentScan("com.repeatsubmit.autoconfigure")
 @EnableConfigurationProperties(RepeatSubmitProperties.class)
 @ConditionalOnProperty(
         prefix = "repeatsubmit",

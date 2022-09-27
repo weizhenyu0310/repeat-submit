@@ -5,8 +5,9 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * @author wzy
- * @date 2022/9/26 13:47
+ * WebMvcConfigurer
+ *
+ * @author repeatsubmit
  */
 @Component
 public class RepeatSubmitWebMvcConfigurer implements WebMvcConfigurer {
