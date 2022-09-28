@@ -2,7 +2,6 @@ package com.repeatsubmit.autoconfigure;
 
 /**
  * @author repeatsubmit
- * @date 2022/9/26 12:02
  */
 public class StringUtils {
 

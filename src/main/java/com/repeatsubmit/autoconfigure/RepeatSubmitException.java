@@ -12,7 +12,7 @@ public class RepeatSubmitException extends RuntimeException {
     }
 
     /**
-     * @param message
+     * @param message exception message
      */
     public RepeatSubmitException(String message) {
         super(message);
