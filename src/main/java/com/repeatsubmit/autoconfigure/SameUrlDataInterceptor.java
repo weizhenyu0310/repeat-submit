@@ -38,47 +38,48 @@ public class SameUrlDataInterceptor extends RepeatSubmitInterceptor {
     @SuppressWarnings("unchecked")
     @Override
     public boolean isRepeatSubmit(HttpServletRequest request) {
+        synchronized(cache) {
+            String nowParams = "";
+            if (request instanceof RepeatedlyRequestWrapper) {
+                RepeatedlyRequestWrapper repeatedlyRequest = (RepeatedlyRequestWrapper) request;
+                nowParams = HttpHelper.getBodyString(repeatedlyRequest);
+            }
 
-        String nowParams = "";
-        if (request instanceof RepeatedlyRequestWrapper) {
-            RepeatedlyRequestWrapper repeatedlyRequest = (RepeatedlyRequestWrapper) request;
-            nowParams = HttpHelper.getBodyString(repeatedlyRequest);
-        }
+            // body参数为空，获取Parameter的数据
+            if (StringUtils.isEmpty(nowParams)) {
+                nowParams = toJsonString(request.getParameterMap());
+            }
+            Map<String, Object> nowDataMap = new HashMap<String, Object>();
+            nowDataMap.put(REPEAT_PARAMS, nowParams);
+            nowDataMap.put(REPEAT_TIME, System.currentTimeMillis());
 
-        // body参数为空，获取Parameter的数据
-        if (StringUtils.isEmpty(nowParams)) {
-            nowParams = toJsonString(request.getParameterMap());
-        }
-        Map<String, Object> nowDataMap = new HashMap<String, Object>();
-        nowDataMap.put(REPEAT_PARAMS, nowParams);
-        nowDataMap.put(REPEAT_TIME, System.currentTimeMillis());
+            // 请求地址（作为存放cache的key值）
+            String url = request.getRequestURI();
 
-        // 请求地址（作为存放cache的key值）
-        String url = request.getRequestURI();
+            // 唯一值（没有消息头则使用请求地址）
+            String submitKey = request.getHeader("Authorization");
+            if (StringUtils.isEmpty(submitKey)) {
+                submitKey = url;
+            }
 
-        // 唯一值（没有消息头则使用请求地址）
-        String submitKey = request.getHeader("Authorization");
-        if (StringUtils.isEmpty(submitKey)) {
-            submitKey = url;
-        }
+            // 唯一标识（指定key + 消息头）
+            String cacheRepeatKey = "repeat_submit" + submitKey;
 
-        // 唯一标识（指定key + 消息头）
-        String cacheRepeatKey = "repeat_submit" + submitKey;
-
-        Object sessionObj = cache.getIfPresent(String.valueOf(cacheRepeatKey));
-        if (sessionObj != null) {
-            Map<String, Object> sessionMap = (Map<String, Object>) sessionObj;
-            if (sessionMap.containsKey(url)) {
-                Map<String, Object> preDataMap = (Map<String, Object>) sessionMap.get(url);
-                if (compareParams(nowDataMap, preDataMap) && compareTime(nowDataMap, preDataMap)) {
-                    return true;
+            Object sessionObj = cache.getIfPresent(String.valueOf(cacheRepeatKey));
+            if (sessionObj != null) {
+                Map<String, Object> sessionMap = (Map<String, Object>) sessionObj;
+                if (sessionMap.containsKey(url)) {
+                    Map<String, Object> preDataMap = (Map<String, Object>) sessionMap.get(url);
+                    if (compareParams(nowDataMap, preDataMap) && compareTime(nowDataMap, preDataMap)) {
+                        return true;
+                    }
                 }
             }
+            Map<String, Object> cacheMap = new HashMap<>(1);
+            cacheMap.put(url, nowDataMap);
+            cache.put(cacheRepeatKey, cacheMap);
+            return false;
         }
-        Map<String, Object> cacheMap = new HashMap<>(1);
-        cacheMap.put(url, nowDataMap);
-        cache.put(cacheRepeatKey, cacheMap);
-        return false;
     }
 
     /**
